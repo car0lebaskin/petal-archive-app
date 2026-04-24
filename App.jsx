@@ -225,5 +225,105 @@ const PetalArchiveOS = () => {
                 </div>
               </section>
 
-              <button onClick={() => { setIsSaving(true); setTimeout(() => { setShowSuccess(true); setIsSaving(false); setTimeout(() => { setShowSuccess(false); setStep(1); setSale({...sale, price: ''}); }, 1
- 
+              <button onClick={() => { setIsSaving(true); setTimeout(() => { setShowSuccess(true); setIsSaving(false); setTimeout(() => { setShowSuccess(false); setStep(1); setSale({...sale, price: ''}); }, 1500)}, 1000)}} className="w-full bg-[#1B3022] text-white py-7 rounded-3xl font-black text-xl shadow-2xl shadow-green-900/40 uppercase tracking-widest">LOG SALE</button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 2. DASHBOARD VIEW */}
+      {step > 0 && view === 'dashboard' && (
+        <div className="animate-in fade-in duration-500 pb-28">
+          <header className="text-center py-8">
+            <h2 className="text-3xl font-serif italic text-[#1B3022]">Live Insights</h2>
+            <p className="text-[9px] text-[#B5935E] font-bold uppercase tracking-[0.4em] mt-1 italic">Session Analytics</p>
+          </header>
+
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-[#1B3022] p-6 rounded-[2.5rem] text-white shadow-xl">
+              <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest">Session Revenue</p>
+              <h3 className="text-3xl font-serif italic mt-1">RM 1,240</h3>
+              <div className="flex items-center gap-1 text-[9px] text-[#B5935E] mt-3 font-black uppercase italic"><TrendingUp size={12} /> On Track</div>
+            </div>
+            <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+              <p className="text-[9px] font-bold text-[#B5935E] uppercase tracking-widest">Volume</p>
+              <h3 className="text-3xl font-serif italic text-[#1B3022]">18 <span className="text-sm opacity-30">PCS</span></h3>
+              <p className="text-[9px] text-gray-300 font-bold uppercase mt-2">Goal: 25</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-[3rem] border border-gray-50 shadow-sm space-y-8">
+            <section>
+              <h4 className="text-[10px] font-black text-[#B5935E] uppercase tracking-widest mb-6 border-b pb-2">Customer Profile</h4>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+                <div className="space-y-4">
+                  <StatBar label="Chinese" percentage={75} />
+                  <StatBar label="Malay" percentage={15} />
+                  <StatBar label="Indian" percentage={10} />
+                </div>
+                <div className="space-y-4">
+                  <StatBar label="20-35" percentage={60} color="bg-[#1B3022]" />
+                  <StatBar label="35-50" percentage={30} color="bg-[#1B3022]" />
+                  <StatBar label="50+" percentage={10} color="bg-[#1B3022]" />
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h4 className="text-[10px] font-black text-[#B5935E] uppercase tracking-widest mb-4">Top Payment</h4>
+              <div className="flex items-center gap-3 bg-[#FDFBF7] p-4 rounded-2xl border border-gray-50">
+                <div className="bg-[#1B3022] text-white p-2 rounded-lg font-black text-[10px]">TNG</div>
+                <p className="text-[11px] font-bold">85% of transactions are via E-Wallet</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
+
+      {/* 3. SETTINGS / SESSION MANAGER VIEW */}
+      {step > 0 && view === 'settings' && (
+        <div className="animate-in slide-in-from-bottom duration-500 pt-10 pb-28">
+           <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100">
+              <h2 className="text-2xl font-serif italic text-[#1B3022] mb-2">Session Manager</h2>
+              <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-8">Current active tracker details</p>
+              
+              <div className="space-y-6">
+                <div className="flex justify-between border-b pb-4">
+                  <span className="text-[10px] font-black text-[#B5935E] uppercase">Organiser</span>
+                  <span className="text-xs font-bold text-[#1B3022]">{session.organiser}</span>
+                </div>
+                <div className="flex justify-between border-b pb-4">
+                  <span className="text-[10px] font-black text-[#B5935E] uppercase">Venue</span>
+                  <span className="text-xs font-bold text-[#1B3022]">{session.location}</span>
+                </div>
+                <div className="flex justify-between border-b pb-4">
+                  <span className="text-[10px] font-black text-[#B5935E] uppercase">Date</span>
+                  <span className="text-xs font-bold text-[#1B3022]">{session.date}</span>
+                </div>
+              </div>
+
+              <div className="mt-12 space-y-3">
+                <button onClick={() => setStep(0)} className="w-full bg-[#FDFBF7] text-[#1B3022] py-4 rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2 border border-gray-100">
+                   <MapPin size={14}/> Change Location
+                </button>
+                <button onClick={() => { if(window.confirm('End Session? Data will be locked.')){ setStep(0); setView('input'); }}} className="w-full bg-red-50 text-red-400 py-4 rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2">
+                   <LogOut size={14}/> Close Session
+                </button>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* FIXED BOTTOM NAVIGATION */}
+      {step > 0 && (
+        <nav className="fixed bottom-8 left-6 right-6 bg-[#1B3022] rounded-[2.5rem] p-2 flex justify-around items-center z-50 border border-white/5 shadow-2xl">
+          <button onClick={() => setView('input')} className={`p-4 rounded-2xl transition-all ${view === 'input' ? 'bg-[#B5935E] text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}><Plus size={24} /></button>
+          <button onClick={() => setView('dashboard')} className={`p-4 rounded-2xl transition-all ${view === 'dashboard' ? 'bg-[#B5935E] text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}><BarChart3 size={24} /></button>
+          <button onClick={() => setView('settings')} className={`p-4 rounded-2xl transition-all ${view === 'settings' ? 'bg-[#B5935E] text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}><Settings size={24} /></button>
+        </nav>
+      )}
+    </div>
+  );
+};
+
+export default PetalArchiveOS;
