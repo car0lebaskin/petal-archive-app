@@ -8,7 +8,7 @@ import {
 
 const PetalArchiveOS = () => {
   // --- 1. CONFIGURATION ---
-  const API_URL = "https://script.google.com/macros/s/AKfycbyGBxMmu5__UE_ZYxRd_bPbxCIlHyFYL1Rzt0yejKopzF0J0KyFisJhMfUkgUjP9owM/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycby0J-XRdWfiG_gWmbo0ZWWYq9U21oKraAmGltJLyYfYkKK3WE0IRAxM9NujToig725I/exec";
 
   // --- 2. STATE ---
   const [view, setView] = useState('input'); 
