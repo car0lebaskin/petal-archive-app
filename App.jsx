@@ -61,22 +61,33 @@ const PetalArchiveOS = () => {
   // --- 4. DATA CALCULATIONS ---
   const stats = useMemo(() => {
     const totalRevenue = liveData.reduce((acc, curr) => acc + (Number(curr.price) || 0), 0);
-    const totalPieces = liveData.length;
-    
-    const categories = liveData.reduce((acc, curr) => {
-      acc[curr.category] = (acc[curr.category] || 0) + 1;
-      return acc;
-    }, {});
+    const categories = {};
+    const locations = {};
+    const monthlyRevenue = new Array(12).fill(0);
+    const raceCounts = { C: 0, M: 0, I: 0, O: 0 };
+    const ageCounts = { '10s': 0, '20s': 0, '30s': 0, '40s': 0, '50s': 0 };
+    const rushHours = new Array(24).fill(0);
 
-    const locationRevenue = liveData.reduce((acc, curr) => {
-      const loc = curr.location || 'Unknown';
-      acc[loc] = (acc[loc] || 0) + (Number(curr.price) || 0);
-      return acc;
-    }, {});
+    liveData.forEach(row => {
+      categories[row.category] = (categories[row.category] || 0) + 1;
+      locations[row.location] = (locations[row.location] || 0) + (Number(row.price) || 0);
+      
+      const date = new Date(row.timestamp);
+      if (!isNaN(date)) {
+        monthlyRevenue[date.getMonth()] += Number(row.price) || 0;
+        rushHours[date.getHours()] += 1;
+      }
 
-    return { totalRevenue, totalPieces, categories, locationRevenue };
+      if (row.customer) {
+        const parts = row.customer.split(' | ');
+        if (parts[0]) raceCounts[parts[0]] = (raceCounts[parts[0]] || 0) + 1;
+        if (parts[1]) ageCounts[parts[1]] = (ageCounts[parts[1]] || 0) + 1;
+      }
+    });
+
+    return { totalRevenue, totalPieces: liveData.length, categories, locations, monthlyRevenue, raceCounts, ageCounts, rushHours };
   }, [liveData]);
-
+  
   // --- 5. ACTIONS ---
   const startSession = () => {
     localStorage.setItem('petal_archive_v17', JSON.stringify(session));
