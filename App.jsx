@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, BarChart3, Settings, CheckCircle2, 
   Clock, History, BookOpen, ExternalLink, ChevronDown, ChevronUp, 
-  Activity, DollarSign, Loader2, Wallet
+  Activity, DollarSign, Loader2
 } from 'lucide-react';
 
 const PetalArchiveOS = () => {
@@ -58,26 +58,29 @@ const PetalArchiveOS = () => {
     }
   }, [view]);
 
-  // --- 4. DATA CALCULATIONS ---
+  // --- 4. DATA CALCULATIONS (THE BRAIN) ---
   const stats = useMemo(() => {
     const totalRevenue = liveData.reduce((acc, curr) => acc + (Number(curr.price) || 0), 0);
     const categories = {};
-    const locations = {};
+    const locationRevenue = {};
     const monthlyRevenue = new Array(12).fill(0);
     const raceCounts = { C: 0, M: 0, I: 0, O: 0 };
     const ageCounts = { '10s': 0, '20s': 0, '30s': 0, '40s': 0, '50s': 0 };
     const rushHours = new Array(24).fill(0);
 
     liveData.forEach(row => {
+      // 1. Categories & Locations
       categories[row.category] = (categories[row.category] || 0) + 1;
-      locations[row.location] = (locations[row.location] || 0) + (Number(row.price) || 0);
+      locationRevenue[row.location] = (locationRevenue[row.location] || 0) + (Number(row.price) || 0);
       
+      // 2. Time Analysis
       const date = new Date(row.timestamp);
       if (!isNaN(date)) {
         monthlyRevenue[date.getMonth()] += Number(row.price) || 0;
         rushHours[date.getHours()] += 1;
       }
 
+      // 3. Customer Parsing
       if (row.customer) {
         const parts = row.customer.split(' | ');
         if (parts[0]) raceCounts[parts[0]] = (raceCounts[parts[0]] || 0) + 1;
@@ -85,7 +88,16 @@ const PetalArchiveOS = () => {
       }
     });
 
-    return { totalRevenue, totalPieces: liveData.length, categories, locations, monthlyRevenue, raceCounts, ageCounts, rushHours };
+    return { 
+      totalRevenue, 
+      totalPieces: liveData.length, 
+      categories, 
+      locationRevenue, 
+      monthlyRevenue, 
+      raceCounts, 
+      ageCounts, 
+      rushHours 
+    };
   }, [liveData]);
   
   // --- 5. ACTIONS ---
@@ -238,6 +250,18 @@ const PetalArchiveOS = () => {
             </div>
 
             <section className="bg-white p-8 rounded-[3rem] border border-gray-100">
+              <Label>Daily Customer Profile</Label>
+              <div className="space-y-4">
+                <div className="space-y-2"><p className="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Race Split (C/M/I/O)</p>
+                  <div className="flex h-3 bg-gray-50 rounded-full overflow-hidden">{Object.entries(stats.raceCounts).map(([race, count], i) => (<div key={race} style={{ width: `${(count / (stats.totalPieces || 1)) * 100}%`, backgroundColor: i % 2 === 0 ? '#B5935E' : '#1B3022' }} />))}</div>
+                </div>
+                <div className="space-y-2"><p className="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Age Split (10s-50s)</p>
+                  <div className="flex h-3 bg-gray-50 rounded-full overflow-hidden">{Object.entries(stats.ageCounts).map(([age, count], i) => (<div key={age} style={{ width: `${(count / (stats.totalPieces || 1)) * 100}%`, opacity: 1 - (i * 0.15), backgroundColor: '#1B3022' }} />))}</div>
+                </div>
+              </div>
+            </section>
+
+            <section className="bg-white p-8 rounded-[3rem] border border-gray-100">
               <Label>Live Category Performance</Label>
               <div className="space-y-2">
                 {Object.entries(stats.categories).sort((a,b) => b[1] - a[1]).map(([cat, count], i) => (
@@ -247,6 +271,16 @@ const PetalArchiveOS = () => {
                 ))}
               </div>
             </section>
+
+            <section className="bg-white p-8 rounded-[3rem] border border-gray-100">
+              <Label>Peak Rush Window</Label>
+              <div className="flex items-end gap-1 h-20 pt-4">
+                {stats.rushHours.slice(10, 22).map((count, i) => (
+                  <div key={i} className="flex-1 bg-[#1B3022] rounded-t-sm" style={{ height: `${(count / (Math.max(...stats.rushHours) || 1)) * 100}%` }} />
+                ))}
+              </div>
+              <p className="text-[8px] text-center mt-2 text-gray-300 uppercase font-black">10AM — 10PM Tracker</p>
+            </section>
           </motion.div>
         )}
 
@@ -254,18 +288,30 @@ const PetalArchiveOS = () => {
         {view === 'history' && step > 0 && (
           <motion.div key="bi" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pb-32">
             <header className="text-center py-6"><h2 className="text-3xl font-serif italic text-[#1B3022]">Business Intelligence</h2></header>
+            
             <section className="bg-[#1B3022] p-8 rounded-[3rem] text-white shadow-xl">
               <Label><span className="text-[#B5935E]">Venue Comparison</span></Label>
               <h4 className="text-xl font-serif italic mb-2">{session.location}</h4>
               <p className="text-[9px] opacity-40 uppercase font-black">Total RM at this location</p>
               <p className="text-3xl font-serif mt-1">RM {stats.locationRevenue[session.location]?.toLocaleString() || 0}</p>
             </section>
+
+            <section className="bg-white p-8 rounded-[3rem] border border-gray-100">
+              <Label>Monthly Seasonality (RM)</Label>
+              <div className="flex items-end gap-1 h-24 pt-4">
+                {stats.monthlyRevenue.map((rev, i) => (
+                  <div key={i} className="flex-1 bg-[#1B3022] rounded-t-sm" style={{ height: `${(rev / (Math.max(...stats.monthlyRevenue) || 1)) * 100}%` }} />
+                ))}
+              </div>
+              <div className="flex justify-between mt-2 text-[8px] font-black text-gray-200"><span>JAN</span><span>DEC</span></div>
+            </section>
+
             <section className="bg-white p-8 rounded-[3rem] border border-gray-100">
               <Label>Location History</Label>
               <div className="space-y-4">
                 {Object.entries(stats.locationRevenue).map(([loc, rev], i) => (
-                  <div key={i} className="flex justify-between border-b border-gray-50 pb-2">
-                    <span className="text-[9px] font-black uppercase text-gray-400">{loc}</span>
+                  <div key={i} className="flex justify-between border-b border-gray-50 pb-2 italic">
+                    <span className="text-[9px] font-black uppercase text-gray-400 not-italic">{loc}</span>
                     <span className="font-serif italic text-[#1B3022]">RM {rev.toLocaleString()}</span>
                   </div>
                 ))}
@@ -285,14 +331,13 @@ const PetalArchiveOS = () => {
                   <div className="flex justify-between"><span>Clover Items</span><span className="text-[#B5935E]">+ RM 14</span></div>
                </div>
             </section>
-            <section className="bg-white p-2 rounded-[2.5rem] border border-gray-100 shadow-sm">
+            <section className="bg-white p-2 rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
               <div className="p-6 flex items-center gap-2"><BookOpen size={18} className="text-[#B5935E]"/><Label>Price Directory</Label></div>
               <div className="space-y-1">
                 {[
-                  {c: "Necklaces", i: [{n: "Cable / Snake Chain", p: "95"}, {n: "Beaded / Kiss / M-Paperclip / Paperclip", p: "105"}, {n: "ETC", p: "129"}, {n: "3-Pearl / 3-Agate / White C2 / Multicoloured C2", p: "159"}, {n: "1/2 Pearl / Star Pearl", p: "179"}, {n: "Full Pearl", p: "239"}]},
-                  {c: "Bracelets", i: [{n: "Snake / Skinny Snake / Thick / Box Chain", p: "95"}, {n: "M-Paper / Twist / Paperclip", p: "105"}, {n: "Pretzel / ETC / CZ/Knot Big Link / White, Black, Green, Multicoloured C2", p: "115"}, {n: "1/2 Pearl", p: "149"}, {n: "Charm Bracelet (3 Charms)", p: "169"}]},
-                  {c: "Bangles, Rings & Earrings", i: [{n: "Bangle (Twist)", p: "129"}, {n: "Bangle (Curb / Open Link)", p: "115"}, {n: "Hoop Earrings", p: "95"}, {n: "Hook / Stud / Dangle", p: "89"}, {n: "Pebble Large / Small", p: "95 / 89"}, {n: "Rings", p: "89"}]},
-                  {c: "Add-Ons & Standalone", i: [{n: "Floral Charm", p: "40"}, {n: "Letter Charm", p: "30"}, {n: "STG PDP Charm", p: "40"}, {n: "Pendant Alone", p: "75"}, {n: "Floral Charm Alone", p: "55"}, {n: "Letter Charm Alone", p: "45"}, {n: "STG PDP Charm Alone", p: "55"}]}
+                  {c: "Necklaces", i: [{n: "Cable / Snake Chain", p: "95"}, {n: "Beaded / Kiss / M-Paperclip / Paperclip", p: "105"}, {n: "ETC", p: "129"}, {n: "3-Pearl / 3-Agate / White C2", p: "159"}, {n: "Full Pearl", p: "239"}]},
+                  {c: "Bracelets", i: [{n: "Snake / Box Chain", p: "95"}, {n: "M-Paper / Twist / Paperclip", p: "105"}, {n: "Charm (3 Charms)", p: "169"}]},
+                  {c: "Bangles & Rings", i: [{n: "Bangle (Twist)", p: "129"}, {n: "Rings", p: "89"}]}
                 ].map((group, i) => (
                   <div key={i} className="px-2">
                     <button onClick={() => setOpenPriceCat(openPriceCat === i ? null : i)} className="w-full p-4 flex justify-between items-center text-[10px] font-black uppercase text-[#1B3022] bg-[#FDFBF7] rounded-xl mb-1">
