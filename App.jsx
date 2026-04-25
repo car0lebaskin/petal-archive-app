@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Plus, BarChart3, Settings, MapPin, Calendar, CheckCircle2, 
+  Plus, BarChart3, Settings, CheckCircle2, 
   Clock, History, BookOpen, ExternalLink, ChevronDown, ChevronUp, 
-  PieChart, Activity, DollarSign, Loader2
+  Activity, DollarSign, Loader2
 } from 'lucide-react';
 
 const PetalArchiveOS = () => {
   // --- 1. CONFIGURATION ---
-  const API_URL = "https://script.google.com/macros/s/AKfycby0J-XRdWfiG_gWmbo0ZWWYq9U21oKraAmGltJLyYfYkKK3WE0IRAxM9NujToig725I/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbyGBxMmu5__UE_ZYxRd_bPbxCIlHyFYL1Rzt0yejKopzF0J0KyFisJhMfUkgUjP9owM/exec";
 
   // --- 2. STATE ---
   const [view, setView] = useState('input'); 
@@ -58,18 +58,16 @@ const PetalArchiveOS = () => {
     }
   }, [view]);
 
-  // --- 4. DATA CALCULATIONS (The "Brain") ---
+  // --- 4. DATA CALCULATIONS ---
   const stats = useMemo(() => {
     const totalRevenue = liveData.reduce((acc, curr) => acc + (Number(curr.price) || 0), 0);
     const totalPieces = liveData.length;
     
-    // Category Ranking
     const categories = liveData.reduce((acc, curr) => {
       acc[curr.category] = (acc[curr.category] || 0) + 1;
       return acc;
     }, {});
 
-    // Location Analysis for BI
     const locationRevenue = liveData.reduce((acc, curr) => {
       const loc = curr.location || 'Unknown';
       acc[loc] = (acc[loc] || 0) + (Number(curr.price) || 0);
@@ -188,6 +186,11 @@ const PetalArchiveOS = () => {
                   <div className="text-6xl font-serif text-[#1B3022] mb-6">RM {basket.reduce((acc, item) => acc + Number(item.price || 0), 0)}</div>
                   <div className="grid grid-cols-3 gap-2">{['Cash', 'Card', 'QR'].map(p => (<button key={p} onClick={() => setCustomer({...customer, payment: p})} className={`py-3 text-[10px] font-black rounded-xl border ${customer.payment === p ? 'bg-[#1B3022] text-white' : 'bg-gray-50'}`}>{p}</button>))}</div>
                 </div>
+                <section className="bg-white p-8 rounded-[3rem] border border-gray-100 space-y-4">
+                  <Label>Customer Profile</Label>
+                  <div className="grid grid-cols-4 gap-2">{['C', 'M', 'I', 'O'].map(r => (<button key={r} onClick={() => setCustomer({...customer, race: r})} className={`py-2 rounded-lg text-[10px] font-black ${customer.race === r ? 'bg-[#B5935E] text-white' : 'bg-gray-50'}`}>{r}</button>))}</div>
+                  <div className="grid grid-cols-5 gap-2">{['10s', '20s', '30s', '40s', '50s'].map(a => (<button key={a} onClick={() => setCustomer({...customer, age: a})} className={`py-2 rounded-lg text-[10px] font-black ${customer.age === a ? 'bg-[#B5935E] text-white' : 'bg-gray-50'}`}>{a}</button>))}</div>
+                </section>
                 <button onClick={logTransaction} className="w-full bg-[#1B3022] text-white py-7 rounded-3xl font-black text-xl shadow-2xl uppercase tracking-widest">Log Transaction</button>
               </div>
             )}
@@ -221,26 +224,25 @@ const PetalArchiveOS = () => {
                     <span>{cat}</span><span className="text-[#B5935E]">{count} SOLD</span>
                   </div>
                 ))}
-                {liveData.length === 0 && <p className="text-[10px] text-gray-300 italic">No sales recorded yet...</p>}
               </div>
             </section>
           </motion.div>
         )}
 
-        {/* BI VIEW (History & Comparisons) */}
+        {/* BI VIEW */}
         {view === 'history' && step > 0 && (
           <motion.div key="bi" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pb-32">
             <header className="text-center py-6"><h2 className="text-3xl font-serif italic text-[#1B3022]">Business Intelligence</h2></header>
             
             <section className="bg-[#1B3022] p-8 rounded-[3rem] text-white shadow-xl">
-              <Label><span className="text-[#B5935E]">Current Venue Efficiency</span></Label>
+              <Label><span className="text-[#B5935E]">Venue Comparison</span></Label>
               <h4 className="text-xl font-serif italic mb-2">{session.location}</h4>
               <p className="text-[9px] opacity-40 uppercase font-black">Total RM at this location</p>
               <p className="text-3xl font-serif mt-1">RM {stats.locationRevenue[session.location]?.toLocaleString() || 0}</p>
             </section>
 
             <section className="bg-white p-8 rounded-[3rem] border border-gray-100">
-              <Label>Location Comparison</Label>
+              <Label>Location History</Label>
               <div className="space-y-4">
                 {Object.entries(stats.locationRevenue).map(([loc, rev], i) => (
                   <div key={i} className="flex justify-between border-b border-gray-50 pb-2">
@@ -253,74 +255,50 @@ const PetalArchiveOS = () => {
           </motion.div>
         )}
 
-       {/* COMMAND CENTER (Settings) */}
-{view === 'settings' && step > 0 && (
-  <motion.div key="settings" initial={{ y: 20 }} animate={{ y: 0 }} className="space-y-6 pb-32">
-    <header className="text-center py-6">
-      <h2 className="text-3xl font-serif italic text-[#1B3022]">Command Center</h2>
-    </header>
-    
-    {/* Quick Rules Card */}
-    <section className="bg-[#1B3022] p-8 rounded-[2.5rem] text-white shadow-xl">
-       <div className="flex items-center gap-2 mb-4 text-[#B5935E] font-black text-[10px] uppercase tracking-widest">
-         <Clock size={16}/> Quick Rules
-       </div>
-       <div className="space-y-3 text-[10px] font-black uppercase tracking-[0.1em]">
-          <div className="flex justify-between border-b border-white/5 pb-2">
-            <span>Chains Alone</span>
-            <span className="text-[#B5935E]">Minus RM 30 from original price</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Clover Items</span>
-            <span className="text-[#B5935E]">Plus RM 14 to original price</span>
-          </div>
-       </div>
-    </section>
+        {/* COMMAND CENTER (Settings) */}
+        {view === 'settings' && step > 0 && (
+          <motion.div key="settings" initial={{ y: 20 }} animate={{ y: 0 }} className="space-y-6 pb-32">
+            <header className="text-center py-6"><h2 className="text-3xl font-serif italic text-[#1B3022]">Command Center</h2></header>
+            
+            <section className="bg-[#1B3022] p-8 rounded-[2.5rem] text-white shadow-xl">
+               <div className="flex items-center gap-2 mb-4 text-[#B5935E] font-black text-[10px] uppercase tracking-widest"><Clock size={16}/> Quick Rules</div>
+               <div className="space-y-3 text-[10px] font-black uppercase tracking-[0.1em]">
+                  <div className="flex justify-between border-b border-white/5 pb-2"><span>Chains Alone</span><span className="text-[#B5935E]">- RM 30</span></div>
+                  <div className="flex justify-between"><span>Clover Items</span><span className="text-[#B5935E]">+ RM 14</span></div>
+               </div>
+            </section>
 
-    {/* Price Directory Accordions */}
-    <section className="bg-white p-2 rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-      <div className="p-6 flex items-center gap-2">
-        <BookOpen size={18} className="text-[#B5935E]"/>
-        <Label>Price Directory</Label>
-      </div>
-      <div className="space-y-1">
-        {[
-          {c: "Necklaces", i: [{n: "Cable / Snake Chain", p: "95"}, {n: "Beaded / Kiss / M-Paperclip / Paperclip", p: "105"}, {n: "3-Pearl / 3-Agate / White C2", p: "159"}, {n: "Half/Star Pearl", p: "179"},{n: "Full Pearl", p: "239"}]},
-          {c: "Bracelets", i: [{n: "Snake / Thick / Box Chain", p: "95"}, {n: "M-Paper / Twist / Paperclip", p: "105"}, {n: "Pretzel / ETC / CZ/Knot Big Link / White/Black/Green/Multi C2", p: "115"},{n: "Charm Bracelet (3 Charms)", p: "169"}]},
-          {c: "Bangles, Rings & Earrings", i: [{n: "Bangle (Twist)", p: "129"}, {n: "Bangle (Curb / Open Link)", p: "115"}, {n: "Hoop Earrings", p: "95"}, {n: "Hook / Stud / Dangle", p: "89"}, {n: "Pebble Large / Small", p: "95 / 89"}, {n: "Rings", p: "89"}]},
-          {c: "Add-Ons & Standalone", i: [{n: "Floral Charm", p: "40"}, {n: "Letter Charm", p: "30"}, {n: "STG PDP Charm", p: "40"}, {n: "Pendant Alone", p: "75"}, {n: "Floral Charm Alone", p: "55"}, {n: "Letter Charm Alone", p: "45"}, {n: "STG PDP Charm Alone", p: "55"}]}
-        ].map((group, i) => (
-          <div key={i} className="px-2">
-            <button 
-              onClick={() => setOpenPriceCat(openPriceCat === i ? null : i)} 
-              className="w-full p-4 flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#1B3022] bg-[#FDFBF7] rounded-xl mb-1"
-            >
-              {group.c} {openPriceCat === i ? <ChevronUp size={12}/> : <ChevronDown size={12}/>}
-            </button>
-            {openPriceCat === i && (
-              <div className="p-4 space-y-3 bg-white border border-gray-100 rounded-xl mb-2">
-                {group.i.map((it, j) => (
-                  <div key={j} className="flex justify-between text-[10px] border-b border-gray-50 pb-2 italic">
-                    <span className="text-gray-400 font-bold uppercase not-italic tracking-tighter">{it.n}</span>
-                    <span className="font-serif italic text-[#1B3022]">RM {it.p}</span>
+            <section className="bg-white p-2 rounded-[2.5rem] border border-gray-100 shadow-sm">
+              <div className="p-6 flex items-center gap-2"><BookOpen size={18} className="text-[#B5935E]"/><Label>Price Directory</Label></div>
+              <div className="space-y-1">
+                {[
+                  {c: "Necklaces", i: [{n: "Cable / Snake", p: "95"}, {n: "Beaded / Kiss", p: "105"}, {n: "3-Pearl / 3-Agate", p: "159"}, {n: "Full Pearl", p: "239"}]},
+                  {c: "Bracelets", i: [{n: "Snake / Box", p: "95"}, {n: "M-Paper / Twist", p: "105"}, {n: "Charm (3 Charms)", p: "169"}]},
+                  {c: "Bangles & Rings", i: [{n: "Bangle (Twist)", p: "129"}, {n: "Rings", p: "89"}]}
+                ].map((group, i) => (
+                  <div key={i} className="px-2">
+                    <button onClick={() => setOpenPriceCat(openPriceCat === i ? null : i)} className="w-full p-4 flex justify-between items-center text-[10px] font-black uppercase text-[#1B3022] bg-[#FDFBF7] rounded-xl mb-1">
+                      {group.c} {openPriceCat === i ? <ChevronUp size={12}/> : <ChevronDown size={12}/>}
+                    </button>
+                    {openPriceCat === i && (
+                      <div className="p-4 space-y-3 bg-white border border-gray-100 rounded-xl mb-2">
+                        {group.i.map((it, j) => (
+                          <div key={j} className="flex justify-between text-[10px] border-b border-gray-50 pb-2">
+                            <span className="text-gray-400 font-bold uppercase">{it.n}</span>
+                            <span className="font-serif italic text-[#1B3022]">RM {it.p}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <a href="#" className="flex items-center justify-center gap-2 w-full p-5 bg-[#E8EEE9] rounded-[2rem] text-[10px] font-black uppercase tracking-widest shadow-sm">
-      <ExternalLink size={14}/> Open Master Database
-    </a>
-    
-    <button onClick={endSession} className="w-full bg-red-50 text-red-400 py-6 rounded-3xl font-black text-xs uppercase shadow-sm border border-red-100">
-      End Current Session
-    </button>
-  </motion.div>
-)}
+            </section>
+            
+            <button onClick={endSession} className="w-full bg-red-50 text-red-400 py-6 rounded-3xl font-black text-xs uppercase shadow-sm border border-red-100">End Current Session</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* FLOATING NAVIGATION */}
       {step > 0 && (
