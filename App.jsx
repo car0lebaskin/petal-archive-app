@@ -72,7 +72,7 @@ const PetalArchiveOS = () => {
     </div>
   );
 
-  // --- PRICE DIRECTORY DATA ---
+  // --- DATA REPOSITORY ---
   const priceList = [
     { 
       category: 'Necklaces', 
@@ -90,26 +90,20 @@ const PetalArchiveOS = () => {
       items: [
         { name: 'Snake / Skinny / Thick / Box Slider', price: 'RM 95' },
         { name: 'M-Paper / Paperclip / Twist', price: 'RM 105' },
-        { name: 'Pretzel / etc / CZ Big Link / Knot', price: 'RM 115' },
+        { name: 'Pretzel / CZ Big Link / Knot', price: 'RM 115' },
         { name: 'Spl M-Paper (W/B/CZ)', price: 'RM 115' },
         { name: '1/2 Pearl Bracelet', price: 'RM 149' },
         { name: 'Charm Bracelet (3 Charms)', price: 'RM 169' }
       ] 
     },
     {
-      category: 'Bangles & Rings',
+      category: 'Bangles, Rings & Earrings',
       items: [
         { name: 'Bangle (Curb link / Open)', price: 'RM 115' },
         { name: 'Bangle (Twist)', price: 'RM 129' },
-        { name: 'Rings (Standard)', price: 'RM 89' }
-      ]
-    },
-    {
-      category: 'Earrings',
-      items: [
-        { name: 'Hook / Studs / Dangle', price: 'RM 89' },
-        { name: 'Hoops / Pebble Large', price: 'RM 95' },
-        { name: 'Pebble Small', price: 'RM 89' }
+        { name: 'Rings (Standard)', price: 'RM 89' },
+        { name: 'Earrings (Hook / Studs / Dangle)', price: 'RM 89' },
+        { name: 'Earrings (Hoops / Pebble Large)', price: 'RM 95' }
       ]
     },
     {
@@ -125,8 +119,8 @@ const PetalArchiveOS = () => {
   ];
 
   const globalRules = [
-    { rule: 'Chains Alone', desc: 'Minus RM 30 from original item price' },
-    { rule: 'Clover Items', desc: 'Plus RM 14 to original price' }
+    { rule: 'Chains Alone', desc: 'Minus RM 30 from original' },
+    { rule: 'Clover Items', desc: 'Plus RM 14 to original' }
   ];
 
   if (showSuccess) {
@@ -141,7 +135,7 @@ const PetalArchiveOS = () => {
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#1B3022] font-sans p-5 max-w-md mx-auto overflow-x-hidden pb-32">
       
-      {/* 0. STARTUP: SESSION SETUP (PAGE 0) */}
+      {/* 0. STARTUP: PAGE 0 */}
       {step === 0 && (
         <div className="pt-10 space-y-6">
           <div className="text-center">
@@ -172,7 +166,7 @@ const PetalArchiveOS = () => {
                <ShoppingBag size={20} className="text-[#B5935E]" />
                <div><p className="text-[9px] font-black uppercase text-[#B5935E]">{basket.length} Items</p><p className="text-[10px] opacity-50 uppercase tracking-tighter">{session.eventName} @ {session.location}</p></div>
              </div>
-             {basket.length > 0 && <button onClick={() => setStep(3)} className="bg-[#B5935E] text-[#1B3022] px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-inner active:scale-95">Checkout</button>}
+             {basket.length > 0 && <button onClick={() => setStep(3)} className="bg-[#B5935E] text-[#1B3022] px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-inner">Checkout</button>}
           </div>
 
           {step === 1 && (
@@ -180,7 +174,6 @@ const PetalArchiveOS = () => {
               <section><Label>1. Main Item</Label><div className="grid grid-cols-4 gap-2">{['Necklace', 'Bracelet', 'Ring', 'Earring', 'Bangle', 'Charm', 'Pendant', 'Chain'].map(c => (<GridButton key={c} label={c} active={currentItem.category === c} onClick={() => setCurrentItem({...currentItem, category: c})} />))}</div></section>
               <section><Label>2. Chain</Label>
                 <div className="grid grid-cols-4 gap-2">{['Cable', 'Snake', 'Paperclip', 'M-Paper', 'Kiss', 'Bead', 'None', 'Others'].map(ch => (<GridButton key={ch} label={ch} active={currentItem.chain === ch} onClick={() => setCurrentItem({...currentItem, chain: ch})} />))}</div>
-                {currentItem.chain === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY CHAIN..." value={currentItem.otherChain} onChange={e => setCurrentItem({...currentItem, otherChain: toCaps(e.target.value)})} />}
               </section>
               <div className="grid grid-cols-2 gap-4">
                 <section><Label>3. Series</Label><div className="grid grid-cols-1 gap-2">{['Alphabet', 'Plain', 'CZ', 'Pebble', 'Locket', 'None'].map(s => (<GridButton key={s} label={s} active={currentItem.series === s} onClick={() => setCurrentItem({...currentItem, series: s})} />))}</div></section>
@@ -193,15 +186,9 @@ const PetalArchiveOS = () => {
           {step === 2 && (
             <div className="space-y-6">
               <section><Label>Metal</Label><div className="grid grid-cols-4 gap-2">{['STU', 'STG', 'STR', 'Brass'].map(m => (<GridButton key={m} label={m} active={currentItem.metal === m} onClick={() => setCurrentItem({...currentItem, metal: m})} />))}</div></section>
-              <section><Label>Shape</Label><div className="grid grid-cols-3 gap-2">{['Round', 'Oval', 'Rectangle', 'Heart', 'Octagon', 'Others'].map(sh => (<GridButton key={sh} label={sh} active={currentItem.shape === sh} onClick={() => setCurrentItem({...currentItem, shape: sh})} />))}</div>
-                {currentItem.shape === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY SHAPE..." value={currentItem.otherShape} onChange={e => setCurrentItem({...currentItem, otherShape: toCaps(e.target.value)})} />}
-              </section>
-              <section><Label>Base</Label><div className="grid grid-cols-3 gap-2">{['MOP', 'Black', 'White', 'Clear', 'Others'].map(b => (<GridButton key={b} label={b} active={currentItem.base === b} onClick={() => setCurrentItem({...currentItem, base: b})} />))}</div>
-                {currentItem.base === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY BASE..." value={currentItem.otherBase} onChange={e => setCurrentItem({...currentItem, otherBase: toCaps(e.target.value)})} />}
-              </section>
-              <section><Label>Colour/Letter</Label><div className="grid grid-cols-3 gap-2">{['Red', 'Blue', 'Yellow', 'Purple', 'Pink', 'Clover', 'White', 'Multi', 'Others'].map(col => (<GridButton key={col} label={col} active={currentItem.colourLetter === col} onClick={() => setCurrentItem({...currentItem, colourLetter: col})} />))}</div>
-                {currentItem.colourLetter === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY COLOUR..." value={currentItem.otherColour} onChange={e => setCurrentItem({...currentItem, otherColour: toCaps(e.target.value)})} />}
-              </section>
+              <section><Label>Shape</Label><div className="grid grid-cols-3 gap-2">{['Round', 'Oval', 'Rectangle', 'Heart', 'Octagon', 'Others'].map(sh => (<GridButton key={sh} label={sh} active={currentItem.shape === sh} onClick={() => setCurrentItem({...currentItem, shape: sh})} />))}</div></section>
+              <section><Label>Base</Label><div className="grid grid-cols-3 gap-2">{['MOP', 'Black', 'White', 'Clear', 'Others'].map(b => (<GridButton key={b} label={b} active={currentItem.base === b} onClick={() => setCurrentItem({...currentItem, base: b})} />))}</div></section>
+              <section><Label>Colour/Letter</Label><div className="grid grid-cols-3 gap-2">{['Red', 'Blue', 'Yellow', 'Purple', 'Pink', 'Clover', 'White', 'Multi', 'Others'].map(col => (<GridButton key={col} label={col} active={currentItem.colourLetter === col} onClick={() => setCurrentItem({...currentItem, colourLetter: col})} />))}</div></section>
               <section><Label>Price (RM)</Label><input type="number" className="w-full p-4 bg-white border border-gray-100 rounded-2xl outline-none text-3xl font-serif text-[#1B3022]" placeholder="0" value={currentItem.price} onChange={e => setCurrentItem({...currentItem, price: e.target.value})} /></section>
               <div className="flex gap-4 pt-4"><button onClick={() => setStep(1)} className="flex-1 py-4 text-gray-400 font-bold uppercase text-[10px]">Back</button><button onClick={() => {setBasket([...basket, {...currentItem, id: Date.now()}]); setStep(1); setCurrentItem({category: '', series: '', style: '', metal: '', chain: '', otherChain: '', shape: '', otherShape: '', base: '', otherBase: '', colourLetter: '', otherColour: '', price: ''})}} disabled={!currentItem.price} className="flex-[2] bg-[#B5935E] text-[#1B3022] py-4 rounded-2xl font-black text-sm shadow-xl">ADD TO BASKET</button></div>
             </div>
@@ -214,21 +201,52 @@ const PetalArchiveOS = () => {
                 <div className="text-7xl font-serif text-[#1B3022] mb-6 tracking-tighter">RM {basket.reduce((acc, item) => acc + Number(item.price || 0), 0)}</div>
                 <div className="grid grid-cols-4 gap-2">{['TnG', 'Grab', 'Cash', 'Card'].map(p => (<button key={p} onClick={() => setCustomer({...customer, payment: p})} className={`py-3 text-[10px] font-black rounded-xl border ${customer.payment === p ? 'bg-[#1B3022] text-white' : 'bg-gray-50 text-gray-300'}`}>{p}</button>))}</div>
               </div>
-              <section className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm space-y-4">
-                  <Label>Customer Profile</Label>
-                  <div className="grid grid-cols-2 gap-3">{['F', 'M'].map(g => (<button key={g} onClick={() => setCustomer({...customer, gender: g})} className={`py-4 rounded-2xl border text-[11px] font-black ${customer.gender === g ? 'bg-[#1B3022] text-white' : 'bg-[#FDFBF7] text-gray-400'}`}>{g === 'F' ? 'FEMALE' : 'MALE'}</button>))}</div>
-                  <div className="flex gap-2">{['C', 'M', 'I', 'O'].map(r => (<button key={r} onClick={() => setCustomer({...customer, race: r})} className={`flex-1 py-3 rounded-xl border text-[10px] font-black ${customer.race === r ? 'bg-[#B5935E] text-white' : 'bg-[#FDFBF7] text-gray-400'}`}>{r}</button>))}</div>
-                  <div className="flex gap-1">{['10s', '20s', '30s', '40s', '50s'].map(a => (<button key={a} onClick={() => setCustomer({...customer, age: a})} className={`flex-1 py-3 rounded-xl border text-[10px] font-black ${customer.age === a ? 'bg-[#B5935E] text-white' : 'bg-[#FDFBF7] text-gray-400'}`}>{a}</button>))}</div>
-              </section>
               <button onClick={() => { setIsSaving(true); setTimeout(() => { setShowSuccess(true); setBasket([]); setStep(1); setIsSaving(false); setTimeout(() => setShowSuccess(false), 1200); }, 1000); }} className="w-full bg-[#1B3022] text-white py-7 rounded-3xl font-black text-xl shadow-2xl tracking-widest uppercase">LOG {basket.length} ITEMS</button>
             </div>
           )}
         </div>
       )}
 
-      {/* 2. DASHBOARD & 3. HISTORY (PLACEHOLDERS) */}
-      {view === 'dashboard' && step > 0 && <div className="text-center py-20 font-serif italic">Dashboard Loading...</div>}
-      {view === 'history' && step > 0 && <div className="text-center py-20 font-serif italic">History Insights Loading...</div>}
+      {/* 2. DASHBOARD: SESSION STATS */}
+      {view === 'dashboard' && step > 0 && (
+        <div className="space-y-6 pb-20 animate-in fade-in">
+          <header className="text-center py-6"><h2 className="text-3xl font-serif italic">Session Dashboard</h2></header>
+          <div className="bg-[#1B3022] p-8 rounded-[3rem] text-white shadow-xl relative overflow-hidden">
+            <TrendingUp className="absolute right-[-10px] top-[-10px] opacity-10" size={100} />
+            <div className="flex justify-between items-end">
+              <div><p className="text-[9px] font-bold opacity-40 uppercase tracking-widest">Revenue Today</p><h3 className="text-3xl font-serif italic">RM 1,420</h3></div>
+              <div className="text-right border-l border-white/10 pl-6">
+                <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest text-[#B5935E]">Items Sold</p>
+                <h3 className="text-2xl font-serif italic text-[#B5935E]">12 Pcs</h3>
+              </div>
+            </div>
+          </div>
+          <section className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm"><Label>Payment Split (Today)</Label><div className="space-y-4"><StatBar label="TnG" percentage={85} /><StatBar label="Grab" percentage={10} /><StatBar label="Cash" percentage={5} /></div></section>
+        </div>
+      )}
+
+      {/* 3. HISTORY: BI INSIGHTS */}
+      {view === 'history' && step > 0 && (
+        <div className="space-y-6 pb-20 animate-in fade-in">
+          <header className="text-center py-6"><h2 className="text-3xl font-serif italic">Business Intelligence</h2></header>
+          <section className="bg-[#1B3022] p-8 rounded-[3rem] text-white shadow-xl">
+            <Label><span className="text-[#B5935E]">Location Leaderboard (ARPD)</span></Label>
+            <div className="space-y-5 mt-4">
+              {[{loc:'163 Mall',arpd:'1.3k',p:100},{loc:'Waterfront',arpd:'1.0k',p:85},{loc:'The Campus',arpd:'0.8k',p:65}].map((l, i) => (
+                <div key={i} className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-black uppercase"><span>{l.loc}</span><span className="font-serif italic text-[#B5935E]">RM {l.arpd}</span></div>
+                  <div className="w-full h-1 bg-white/10 rounded-full"><div className="h-full bg-[#B5935E]" style={{ width: `${l.p}%` }} /></div>
+                </div>
+              ))}
+            </div>
+          </section>
+          <section className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm"><Label>Yearly Trend</Label>
+            <div className="flex items-end gap-1 h-32 pt-4">
+              {[{m:'Jan',r:40},{m:'Feb',r:85,t:'VAL'},{m:'Mar',r:30},{m:'Apr',r:50},{m:'May',r:70,t:'MOM'}].map((d, i) => (<div key={i} className="flex-1 flex flex-col items-center gap-1 relative">{d.t && <div className="absolute top-[-15px] text-[6px] bg-[#B5935E] text-[#1B3022] px-1 rounded font-black">{d.t}</div>}<div className="w-full bg-[#1B3022] rounded-t-sm" style={{ height: `${d.r}%` }} /><span className="text-[7px] font-black text-gray-300 uppercase">{d.m}</span></div>))}
+            </div>
+          </section>
+        </div>
+      )}
 
       {/* 4. SETTINGS: COMMAND CENTER */}
       {view === 'settings' && step > 0 && (
@@ -241,7 +259,7 @@ const PetalArchiveOS = () => {
           </section>
 
           <section className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-            <div className="bg-[#FDFBF7] px-6 py-4 border-b border-gray-50 flex items-center gap-2"><Database size={14} className="text-[#B5935E]" /><span className="text-[10px] font-black uppercase tracking-widest">Price Directory</span></div>
+            <div className="bg-[#FDFBF7] px-6 py-4 border-b border-gray-50 flex items-center gap-2"><Database size={14} className="text-[#B5935E]" /><span className="text-[10px] font-black uppercase tracking-widest">Full Price Directory</span></div>
             <div className="p-2 space-y-1">
               {priceList.map((cat, idx) => (
                 <div key={idx} className="border-b border-gray-50 last:border-0">
@@ -259,10 +277,10 @@ const PetalArchiveOS = () => {
       {/* FIXED NAVIGATION */}
       {step > 0 && (
         <nav className="fixed bottom-8 left-6 right-6 bg-[#1B3022] rounded-[2.5rem] p-2 flex justify-around items-center z-50 shadow-2xl border border-white/5">
-          <button onClick={() => setView('input')} className={`p-4 rounded-2xl transition-all ${view === 'input' ? 'bg-[#B5935E] text-white shadow-lg' : 'text-gray-500'}`}><Plus size={22} /></button>
-          <button onClick={() => setView('dashboard')} className={`p-4 rounded-2xl transition-all ${view === 'dashboard' ? 'bg-[#B5935E] text-white shadow-lg' : 'text-gray-500'}`}><BarChart3 size={22} /></button>
-          <button onClick={() => setView('history')} className={`p-4 rounded-2xl transition-all ${view === 'history' ? 'bg-[#B5935E] text-white shadow-lg' : 'text-gray-500'}`}><History size={22} /></button>
-          <button onClick={() => setView('settings')} className={`p-4 rounded-2xl transition-all ${view === 'settings' ? 'bg-[#B5935E] text-white shadow-lg' : 'text-gray-500'}`}><Settings size={22} /></button>
+          <button onClick={() => setView('input')} className={`p-4 rounded-2xl transition-all ${view === 'input' ? 'bg-[#B5935E] text-white' : 'text-gray-500'}`}><Plus size={22} /></button>
+          <button onClick={() => setView('dashboard')} className={`p-4 rounded-2xl transition-all ${view === 'dashboard' ? 'bg-[#B5935E] text-white' : 'text-gray-500'}`}><BarChart3 size={22} /></button>
+          <button onClick={() => setView('history')} className={`p-4 rounded-2xl transition-all ${view === 'history' ? 'bg-[#B5935E] text-white' : 'text-gray-500'}`}><History size={22} /></button>
+          <button onClick={() => setView('settings')} className={`p-4 rounded-2xl transition-all ${view === 'settings' ? 'bg-[#B5935E] text-white' : 'text-gray-500'}`}><Settings size={22} /></button>
         </nav>
       )}
     </div>
