@@ -72,39 +72,44 @@ const PetalArchiveOS = () => {
     </div>
   );
 
-  // --- DATA REPOSITORY ---
+  // --- PRICE DIRECTORY DATA ---
   const priceList = [
     { 
       category: 'Necklaces', 
       items: [
         { name: 'Cable / Snake Chain', price: 'RM 95' },
-        { name: 'Beaded/Kiss/M-Paper/Paperclip', price: 'RM 105' },
+        { name: 'Beaded / Kiss / M-Paper / Paperclip', price: 'RM 105' },
         { name: 'Etc. Chain Types', price: 'RM 129' },
-        { name: '3-Pearl/3-Agate/CZ (W/Multi)', price: 'RM 159' },
-        { name: '1/2 or Full Pearl (Std)', price: 'RM 179' },
+        { name: '3-Pearl / 3-Agate / W-CZ / Multi CZ', price: 'RM 159' },
+        { name: '1/2 Pearl / Full Pearl (Std)', price: 'RM 179' },
         { name: 'Full Pearl (Premium)', price: 'RM 239' }
       ] 
     },
     { 
       category: 'Bracelets', 
       items: [
-        { name: 'Snake/Skinny/Thick/Box Slider', price: 'RM 95' },
-        { name: 'M-Paper/Paperclip/Twist', price: 'RM 105' },
-        { name: 'Pretzel/CZ Big Link/Knot', price: 'RM 115' },
+        { name: 'Snake / Skinny / Thick / Box Slider', price: 'RM 95' },
+        { name: 'M-Paper / Paperclip / Twist', price: 'RM 105' },
+        { name: 'Pretzel / etc / CZ Big Link / Knot', price: 'RM 115' },
         { name: 'Spl M-Paper (W/B/CZ)', price: 'RM 115' },
         { name: '1/2 Pearl Bracelet', price: 'RM 149' },
         { name: 'Charm Bracelet (3 Charms)', price: 'RM 169' }
       ] 
     },
     {
-      category: 'Bangles, Rings & Earrings',
+      category: 'Bangles & Rings',
       items: [
-        { name: 'Bangle (Curb / Open)', price: 'RM 115' },
+        { name: 'Bangle (Curb link / Open)', price: 'RM 115' },
         { name: 'Bangle (Twist)', price: 'RM 129' },
-        { name: 'Rings (Standard)', price: 'RM 89' },
-        { name: 'Earrings (Hook/Stud/Dangle)', price: 'RM 89' },
-        { name: 'Earrings (Hoop/Pebble Large)', price: 'RM 95' },
-        { name: 'Earrings (Pebble Small)', price: 'RM 89' }
+        { name: 'Rings (Standard)', price: 'RM 89' }
+      ]
+    },
+    {
+      category: 'Earrings',
+      items: [
+        { name: 'Hook / Studs / Dangle', price: 'RM 89' },
+        { name: 'Hoops / Pebble Large', price: 'RM 95' },
+        { name: 'Pebble Small', price: 'RM 89' }
       ]
     },
     {
@@ -120,16 +125,14 @@ const PetalArchiveOS = () => {
   ];
 
   const globalRules = [
-    { rule: 'Chains Alone', desc: 'Minus RM 30 from original' },
-    { rule: 'Clover Items', desc: 'Plus RM 14 to original' }
+    { rule: 'Chains Alone', desc: 'Minus RM 30 from original item price' },
+    { rule: 'Clover Items', desc: 'Plus RM 14 to original price' }
   ];
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-24 h-24 bg-[#1B3022] rounded-full flex items-center justify-center mb-6 shadow-2xl animate-pulse">
-          <CheckCircle2 size={48} className="text-[#B5935E]" />
-        </div>
+      <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-6 text-center animate-in zoom-in">
+        <div className="w-24 h-24 bg-[#1B3022] rounded-full flex items-center justify-center mb-6 shadow-2xl animate-pulse"><CheckCircle2 size={48} className="text-[#B5935E]" /></div>
         <h2 className="text-3xl font-serif italic text-[#1B3022]">Logged to Archive</h2>
       </div>
     );
@@ -138,7 +141,7 @@ const PetalArchiveOS = () => {
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#1B3022] font-sans p-5 max-w-md mx-auto overflow-x-hidden pb-32">
       
-      {/* 0. STARTUP: SESSION SETUP */}
+      {/* 0. STARTUP: SESSION SETUP (PAGE 0) */}
       {step === 0 && (
         <div className="pt-10 space-y-6">
           <div className="text-center">
@@ -155,7 +158,7 @@ const PetalArchiveOS = () => {
               </div>
               {session.location === 'Others' && <input className="w-full mt-2 p-3 bg-[#FDFBF7] rounded-xl outline-none ring-1 ring-gray-100 text-xs font-bold uppercase" placeholder="SPECIFY LOCATION..." value={session.otherLocation} onChange={e => setSession({...session, otherLocation: toCaps(e.target.value)})} />}
             </div>
-            <div><Label>Date</Label><div className="relative"><Calendar className="absolute left-4 top-4 text-[#B5935E]" size={18} /><input type="date" className="w-full pl-12 p-4 bg-[#FDFBF7] rounded-2xl outline-none ring-1 ring-gray-100" value={session.date} onChange={e => setSession({...session, date: e.target.value})} /></div></div>
+            <div><Label>Date</Label><div className="relative"><Calendar className="absolute left-4 top-4 text-[#B5935E]" size={18} /><input type="date" className="w-full pl-12 p-4 bg-[#FDFBF7] rounded-2xl outline-none ring-1 ring-gray-100 font-bold" value={session.date} onChange={e => setSession({...session, date: e.target.value})} /></div></div>
             <button onClick={() => setStep(1)} disabled={!session.location || !session.eventName} className="w-full bg-[#1B3022] text-white py-5 rounded-2xl font-bold text-lg shadow-xl">Open Tracker</button>
           </div>
         </div>
@@ -167,21 +170,21 @@ const PetalArchiveOS = () => {
           <div className="flex justify-between items-center bg-[#1B3022] p-4 rounded-2xl shadow-lg sticky top-0 z-10 border border-white/10">
              <div className="flex items-center gap-3 text-white">
                <ShoppingBag size={20} className="text-[#B5935E]" />
-               <div><p className="text-[9px] font-black uppercase text-[#B5935E]">{basket.length} Items</p><p className="text-[10px] opacity-50 uppercase tracking-tighter">{session.eventName}</p></div>
+               <div><p className="text-[9px] font-black uppercase text-[#B5935E]">{basket.length} Items</p><p className="text-[10px] opacity-50 uppercase tracking-tighter">{session.eventName} @ {session.location}</p></div>
              </div>
              {basket.length > 0 && <button onClick={() => setStep(3)} className="bg-[#B5935E] text-[#1B3022] px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-inner active:scale-95">Checkout</button>}
           </div>
 
           {step === 1 && (
             <div className="space-y-6">
-              <section><Label>1. Category</Label><div className="grid grid-cols-4 gap-2">{['Necklace', 'Bracelet', 'Ring', 'Earring', 'Bangle', 'Charm', 'Pendant', 'Chain'].map(c => (<GridButton key={c} label={c} active={currentItem.category === c} onClick={() => setCurrentItem({...currentItem, category: c})} />))}</div></section>
+              <section><Label>1. Main Item</Label><div className="grid grid-cols-4 gap-2">{['Necklace', 'Bracelet', 'Ring', 'Earring', 'Bangle', 'Charm', 'Pendant', 'Chain'].map(c => (<GridButton key={c} label={c} active={currentItem.category === c} onClick={() => setCurrentItem({...currentItem, category: c})} />))}</div></section>
               <section><Label>2. Chain</Label>
                 <div className="grid grid-cols-4 gap-2">{['Cable', 'Snake', 'Paperclip', 'M-Paper', 'Kiss', 'Bead', 'None', 'Others'].map(ch => (<GridButton key={ch} label={ch} active={currentItem.chain === ch} onClick={() => setCurrentItem({...currentItem, chain: ch})} />))}</div>
-                {currentItem.chain === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY CHAIN..." onChange={e => setCurrentItem({...currentItem, otherChain: toCaps(e.target.value)})} />}
+                {currentItem.chain === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY CHAIN..." value={currentItem.otherChain} onChange={e => setCurrentItem({...currentItem, otherChain: toCaps(e.target.value)})} />}
               </section>
               <div className="grid grid-cols-2 gap-4">
-                <section><Label>Series</Label><div className="grid grid-cols-1 gap-2">{['Alphabet', 'Plain', 'CZ', 'Pebble', 'Locket', 'None'].map(s => (<GridButton key={s} label={s} active={currentItem.series === s} onClick={() => setCurrentItem({...currentItem, series: s})} />))}</div></section>
-                <section><Label>Style</Label><div className="grid grid-cols-1 gap-2">{['Signet', 'Adjustable', 'Hoop', 'Hook', 'Stud', 'Dangle', 'Slider', 'None'].map(st => (<GridButton key={st} label={st} active={currentItem.style === st} onClick={() => setCurrentItem({...currentItem, style: st})} />))}</div></section>
+                <section><Label>3. Series</Label><div className="grid grid-cols-1 gap-2">{['Alphabet', 'Plain', 'CZ', 'Pebble', 'Locket', 'None'].map(s => (<GridButton key={s} label={s} active={currentItem.series === s} onClick={() => setCurrentItem({...currentItem, series: s})} />))}</div></section>
+                <section><Label>4. Style</Label><div className="grid grid-cols-1 gap-2">{['Signet', 'Adjustable', 'Hoop', 'Hook', 'Stud', 'Dangle', 'Slider', 'None'].map(st => (<GridButton key={st} label={st} active={currentItem.style === st} onClick={() => setCurrentItem({...currentItem, style: st})} />))}</div></section>
               </div>
               <button onClick={() => setStep(2)} className="w-full bg-[#1B3022] text-white py-5 rounded-2xl font-black shadow-lg">NEXT: DETAILS</button>
             </div>
@@ -190,9 +193,15 @@ const PetalArchiveOS = () => {
           {step === 2 && (
             <div className="space-y-6">
               <section><Label>Metal</Label><div className="grid grid-cols-4 gap-2">{['STU', 'STG', 'STR', 'Brass'].map(m => (<GridButton key={m} label={m} active={currentItem.metal === m} onClick={() => setCurrentItem({...currentItem, metal: m})} />))}</div></section>
-              <section><Label>Shape</Label><div className="grid grid-cols-3 gap-2">{['Round', 'Oval', 'Rectangle', 'Heart', 'Octagon', 'Others'].map(sh => (<GridButton key={sh} label={sh} active={currentItem.shape === sh} onClick={() => setCurrentItem({...currentItem, shape: sh})} />))}</div></section>
-              <section><Label>Base</Label><div className="grid grid-cols-3 gap-2">{['MOP', 'Black', 'White', 'Clear', 'Others'].map(b => (<GridButton key={b} label={b} active={currentItem.base === b} onClick={() => setCurrentItem({...currentItem, base: b})} />))}</div></section>
-              <section><Label>Colour/Letter</Label><div className="grid grid-cols-3 gap-2">{['Red', 'Blue', 'Yellow', 'Purple', 'Pink', 'Clover', 'White', 'Multi', 'Others'].map(col => (<GridButton key={col} label={col} active={currentItem.colourLetter === col} onClick={() => setCurrentItem({...currentItem, colourLetter: col})} />))}</div></section>
+              <section><Label>Shape</Label><div className="grid grid-cols-3 gap-2">{['Round', 'Oval', 'Rectangle', 'Heart', 'Octagon', 'Others'].map(sh => (<GridButton key={sh} label={sh} active={currentItem.shape === sh} onClick={() => setCurrentItem({...currentItem, shape: sh})} />))}</div>
+                {currentItem.shape === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY SHAPE..." value={currentItem.otherShape} onChange={e => setCurrentItem({...currentItem, otherShape: toCaps(e.target.value)})} />}
+              </section>
+              <section><Label>Base</Label><div className="grid grid-cols-3 gap-2">{['MOP', 'Black', 'White', 'Clear', 'Others'].map(b => (<GridButton key={b} label={b} active={currentItem.base === b} onClick={() => setCurrentItem({...currentItem, base: b})} />))}</div>
+                {currentItem.base === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY BASE..." value={currentItem.otherBase} onChange={e => setCurrentItem({...currentItem, otherBase: toCaps(e.target.value)})} />}
+              </section>
+              <section><Label>Colour/Letter</Label><div className="grid grid-cols-3 gap-2">{['Red', 'Blue', 'Yellow', 'Purple', 'Pink', 'Clover', 'White', 'Multi', 'Others'].map(col => (<GridButton key={col} label={col} active={currentItem.colourLetter === col} onClick={() => setCurrentItem({...currentItem, colourLetter: col})} />))}</div>
+                {currentItem.colourLetter === 'Others' && <input className="w-full mt-2 p-3 bg-white border border-gray-100 rounded-xl outline-none text-[10px] font-black uppercase text-[#B5935E]" placeholder="SPECIFY COLOUR..." value={currentItem.otherColour} onChange={e => setCurrentItem({...currentItem, otherColour: toCaps(e.target.value)})} />}
+              </section>
               <section><Label>Price (RM)</Label><input type="number" className="w-full p-4 bg-white border border-gray-100 rounded-2xl outline-none text-3xl font-serif text-[#1B3022]" placeholder="0" value={currentItem.price} onChange={e => setCurrentItem({...currentItem, price: e.target.value})} /></section>
               <div className="flex gap-4 pt-4"><button onClick={() => setStep(1)} className="flex-1 py-4 text-gray-400 font-bold uppercase text-[10px]">Back</button><button onClick={() => {setBasket([...basket, {...currentItem, id: Date.now()}]); setStep(1); setCurrentItem({category: '', series: '', style: '', metal: '', chain: '', otherChain: '', shape: '', otherShape: '', base: '', otherBase: '', colourLetter: '', otherColour: '', price: ''})}} disabled={!currentItem.price} className="flex-[2] bg-[#B5935E] text-[#1B3022] py-4 rounded-2xl font-black text-sm shadow-xl">ADD TO BASKET</button></div>
             </div>
@@ -201,19 +210,25 @@ const PetalArchiveOS = () => {
           {step === 3 && (
             <div className="space-y-6">
               <div className="bg-white p-8 rounded-[3rem] border border-gray-100 text-center shadow-sm">
-                <Label>Total</Label>
-                <div className="text-6xl font-serif text-[#1B3022] mb-6 tracking-tighter">RM {basket.reduce((acc, item) => acc + Number(item.price || 0), 0)}</div>
+                <Label>Grand Total</Label>
+                <div className="text-7xl font-serif text-[#1B3022] mb-6 tracking-tighter">RM {basket.reduce((acc, item) => acc + Number(item.price || 0), 0)}</div>
                 <div className="grid grid-cols-4 gap-2">{['TnG', 'Grab', 'Cash', 'Card'].map(p => (<button key={p} onClick={() => setCustomer({...customer, payment: p})} className={`py-3 text-[10px] font-black rounded-xl border ${customer.payment === p ? 'bg-[#1B3022] text-white' : 'bg-gray-50 text-gray-300'}`}>{p}</button>))}</div>
               </div>
-              <button onClick={() => { setIsSaving(true); setTimeout(() => { setShowSuccess(true); setBasket([]); setStep(1); setIsSaving(false); setTimeout(() => setShowSuccess(false), 1200); }, 1000); }} className="w-full bg-[#1B3022] text-white py-7 rounded-3xl font-black text-xl shadow-2xl tracking-widest uppercase">LOG SALE</button>
+              <section className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm space-y-4">
+                  <Label>Customer Profile</Label>
+                  <div className="grid grid-cols-2 gap-3">{['F', 'M'].map(g => (<button key={g} onClick={() => setCustomer({...customer, gender: g})} className={`py-4 rounded-2xl border text-[11px] font-black ${customer.gender === g ? 'bg-[#1B3022] text-white' : 'bg-[#FDFBF7] text-gray-400'}`}>{g === 'F' ? 'FEMALE' : 'MALE'}</button>))}</div>
+                  <div className="flex gap-2">{['C', 'M', 'I', 'O'].map(r => (<button key={r} onClick={() => setCustomer({...customer, race: r})} className={`flex-1 py-3 rounded-xl border text-[10px] font-black ${customer.race === r ? 'bg-[#B5935E] text-white' : 'bg-[#FDFBF7] text-gray-400'}`}>{r}</button>))}</div>
+                  <div className="flex gap-1">{['10s', '20s', '30s', '40s', '50s'].map(a => (<button key={a} onClick={() => setCustomer({...customer, age: a})} className={`flex-1 py-3 rounded-xl border text-[10px] font-black ${customer.age === a ? 'bg-[#B5935E] text-white' : 'bg-[#FDFBF7] text-gray-400'}`}>{a}</button>))}</div>
+              </section>
+              <button onClick={() => { setIsSaving(true); setTimeout(() => { setShowSuccess(true); setBasket([]); setStep(1); setIsSaving(false); setTimeout(() => setShowSuccess(false), 1200); }, 1000); }} className="w-full bg-[#1B3022] text-white py-7 rounded-3xl font-black text-xl shadow-2xl tracking-widest uppercase">LOG {basket.length} ITEMS</button>
             </div>
           )}
         </div>
       )}
 
-      {/* 2/3. DASHBOARD & BI (STILL PLACEHOLDERS) */}
+      {/* 2. DASHBOARD & 3. HISTORY (PLACEHOLDERS) */}
       {view === 'dashboard' && step > 0 && <div className="text-center py-20 font-serif italic">Dashboard Loading...</div>}
-      {view === 'history' && step > 0 && <div className="text-center py-20 font-serif italic">BI Intelligence Loading...</div>}
+      {view === 'history' && step > 0 && <div className="text-center py-20 font-serif italic">History Insights Loading...</div>}
 
       {/* 4. SETTINGS: COMMAND CENTER */}
       {view === 'settings' && step > 0 && (
