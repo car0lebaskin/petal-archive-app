@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Plus, BarChart3, Settings, CheckCircle2, 
+  Plus, BarChart3, Settings, MapPin, Calendar, CheckCircle2, 
   Clock, History, BookOpen, ExternalLink, ChevronDown, ChevronUp, 
-  Activity, DollarSign, Loader2
+  PieChart, Activity, DollarSign, Loader2
 } from 'lucide-react';
 
 const PetalArchiveOS = () => {
@@ -58,16 +58,18 @@ const PetalArchiveOS = () => {
     }
   }, [view]);
 
-  // --- 4. DATA CALCULATIONS ---
+  // --- 4. DATA CALCULATIONS (The "Brain") ---
   const stats = useMemo(() => {
     const totalRevenue = liveData.reduce((acc, curr) => acc + (Number(curr.price) || 0), 0);
     const totalPieces = liveData.length;
     
+    // Category Ranking
     const categories = liveData.reduce((acc, curr) => {
       acc[curr.category] = (acc[curr.category] || 0) + 1;
       return acc;
     }, {});
 
+    // Location Analysis for BI
     const locationRevenue = liveData.reduce((acc, curr) => {
       const loc = curr.location || 'Unknown';
       acc[loc] = (acc[loc] || 0) + (Number(curr.price) || 0);
@@ -186,11 +188,6 @@ const PetalArchiveOS = () => {
                   <div className="text-6xl font-serif text-[#1B3022] mb-6">RM {basket.reduce((acc, item) => acc + Number(item.price || 0), 0)}</div>
                   <div className="grid grid-cols-3 gap-2">{['Cash', 'Card', 'QR'].map(p => (<button key={p} onClick={() => setCustomer({...customer, payment: p})} className={`py-3 text-[10px] font-black rounded-xl border ${customer.payment === p ? 'bg-[#1B3022] text-white' : 'bg-gray-50'}`}>{p}</button>))}</div>
                 </div>
-                <section className="bg-white p-8 rounded-[3rem] border border-gray-100 space-y-4">
-                  <Label>Customer Profile</Label>
-                  <div className="grid grid-cols-4 gap-2">{['C', 'M', 'I', 'O'].map(r => (<button key={r} onClick={() => setCustomer({...customer, race: r})} className={`py-2 rounded-lg text-[10px] font-black ${customer.race === r ? 'bg-[#B5935E] text-white' : 'bg-gray-50'}`}>{r}</button>))}</div>
-                  <div className="grid grid-cols-5 gap-2">{['10s', '20s', '30s', '40s', '50s'].map(a => (<button key={a} onClick={() => setCustomer({...customer, age: a})} className={`py-2 rounded-lg text-[10px] font-black ${customer.age === a ? 'bg-[#B5935E] text-white' : 'bg-gray-50'}`}>{a}</button>))}</div>
-                </section>
                 <button onClick={logTransaction} className="w-full bg-[#1B3022] text-white py-7 rounded-3xl font-black text-xl shadow-2xl uppercase tracking-widest">Log Transaction</button>
               </div>
             )}
@@ -224,25 +221,26 @@ const PetalArchiveOS = () => {
                     <span>{cat}</span><span className="text-[#B5935E]">{count} SOLD</span>
                   </div>
                 ))}
+                {liveData.length === 0 && <p className="text-[10px] text-gray-300 italic">No sales recorded yet...</p>}
               </div>
             </section>
           </motion.div>
         )}
 
-        {/* BI VIEW */}
+        {/* BI VIEW (History & Comparisons) */}
         {view === 'history' && step > 0 && (
           <motion.div key="bi" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pb-32">
             <header className="text-center py-6"><h2 className="text-3xl font-serif italic text-[#1B3022]">Business Intelligence</h2></header>
             
             <section className="bg-[#1B3022] p-8 rounded-[3rem] text-white shadow-xl">
-              <Label><span className="text-[#B5935E]">Venue Comparison</span></Label>
+              <Label><span className="text-[#B5935E]">Current Venue Efficiency</span></Label>
               <h4 className="text-xl font-serif italic mb-2">{session.location}</h4>
               <p className="text-[9px] opacity-40 uppercase font-black">Total RM at this location</p>
               <p className="text-3xl font-serif mt-1">RM {stats.locationRevenue[session.location]?.toLocaleString() || 0}</p>
             </section>
 
             <section className="bg-white p-8 rounded-[3rem] border border-gray-100">
-              <Label>Location History</Label>
+              <Label>Location Comparison</Label>
               <div className="space-y-4">
                 {Object.entries(stats.locationRevenue).map(([loc, rev], i) => (
                   <div key={i} className="flex justify-between border-b border-gray-50 pb-2">
