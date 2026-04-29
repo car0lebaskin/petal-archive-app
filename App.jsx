@@ -72,24 +72,44 @@ const PRICE_DIRECTORY = [
     c: "Necklaces",
     i: [
       { n: "Cable / Snake Chain", p: "95" },
-      { n: "M-Paperclip / Paperclip", p: "105" },
-      { n: "3-Pearl / 3-Agate", p: "159" },
+      { n: "Beaded / Kiss / M-Paperclip / Paperclip", p: "105" },
+      { n: "ETC", p: "129" },
+      { n: "3-Pearl / 3-Agate / White, Multi C2", p: "159" },
+      { n: "Half, Star Pearl", p: "179" },
       { n: "Full Pearl", p: "239" }
     ]
   },
   {
     c: "Bracelets",
     i: [
-      { n: "Snake / Box Chain", p: "95" },
-      { n: "M-Paper / Twist", p: "105" },
+      { n: "Snake / SKinny Snake / Thick / Box Chain", p: "95" },
+      { n: "M-Paper / Twist / Paperclip", p: "105" },
+      { n: "Pretzel / ETC / CZ/Knot Big Link / White, Black, Green, Multicoloured C2", p: "115" },
+      { n: "1/2 Pearl", p: "149" },
       { n: "Charm Bracelet (3)", p: "169" }
     ]
   },
   {
-    c: "Bangles & Rings",
+    c: "Bangles, Rings & Earrings",
     i: [
       { n: "Bangle (Twist)", p: "129" },
+      { n: "Bangle (Curb / Open Link)", p: "115"},
+      { n: "Hoop Earrings", p: "95"},
+      { n: "Hook / Stud / Dangle", p: "89"},
+      { n: "Pebble Large / Small", p: "95 / 89"},
       { n: "Rings", p: "89" }
+    ]
+    },
+  {
+    c: "Add-Ons & Standalone",
+    i: [
+      { n: "Floral Charm", p: "40" },
+      { n: "Letter Charm", p: "30" },
+      { n: "STG PDP Charm", p: "40" },
+      { n: "Pendant Alone", p: "75" },
+      { n: "Floral Charm Alone", p: "55" },
+      { n: "Letter Charm Alone", p: "45" },
+       { n: "STG PDP Charm Alone", p: "55" },
     ]
   }
 ];
@@ -566,7 +586,7 @@ const PetalArchiveOS = () => {
                 <input
                   list="event-history"
                   className="w-full p-4 bg-[#FDFBF7] rounded-xl outline-none ring-1 ring-gray-100 uppercase text-xs font-bold"
-                  placeholder="E.G. HOLIDAY MARKET"
+                  placeholder="E.G. PINGMIN MARKET"
                   value={session.eventName}
                   onChange={e => setSession(prev => ({ ...prev, eventName: toCaps(e.target.value) }))}
                 />
@@ -597,7 +617,7 @@ const PetalArchiveOS = () => {
                 <input
                   list="organiser-history"
                   className="w-full p-4 bg-[#FDFBF7] rounded-xl outline-none ring-1 ring-gray-100 uppercase text-xs font-bold"
-                  placeholder="E.G. ROTAN LOT"
+                  placeholder="E.G. FINCH MARKET"
                   value={session.organiser}
                   onChange={e => setSession(prev => ({ ...prev, organiser: toCaps(e.target.value) }))}
                 />
