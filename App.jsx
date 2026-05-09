@@ -49,7 +49,7 @@ const STYLE_OPTIONS = ['Signet', 'Adjustable', 'Hoop', 'Hook', 'Stud', 'Dangle',
 const SHAPE_OPTIONS = ['Round', 'Oval', 'Rectangle', 'Heart', 'Octagon', 'Others'];
 const SERIES_OPTIONS = ['Alphabet', 'Plain', 'CZ', 'Pebble', 'Locket', 'None', 'Others'];
 const METAL_OPTIONS = ['STU', 'STG', 'STR', 'Brass'];
-const BASE_OPTIONS = ['MOP', 'Black', 'White', 'Clear', 'Others'];
+const BASE_OPTIONS = ['MOP', 'Black', 'White', 'Clear', 'None', 'Others'];
 const COLOUR_OPTIONS = ['Red', 'Blue', 'Yellow', 'Purple', 'Pink', 'Clover', 'White', 'Multi', 'Others'];
 
 const RACE_COLORS = {
